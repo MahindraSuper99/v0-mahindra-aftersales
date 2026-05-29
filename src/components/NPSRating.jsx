@@ -9,23 +9,23 @@ export default function NPSRating({ value, onChange }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-6 sm:grid-cols-11 gap-2">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="grid grid-cols-6 gap-1.5 sm:grid-cols-11 sm:gap-2">
         {scores.map((score) => (
           <button
             key={score}
             type="button"
             onClick={() => onChange(score)}
             className={cn(
-              'h-12 rounded-lg font-semibold border text-center transition-all',
-              value === score ? getColorClass(score) : 'bg-muted text-foreground'
+              'h-11 sm:h-12 rounded-lg font-semibold border text-center transition-all text-sm sm:text-base active:scale-95',
+              value === score ? getColorClass(score) : 'bg-muted text-foreground hover:bg-muted/80'
             )}
           >
             {score}
           </button>
         ))}
       </div>
-      <div className="flex justify-between text-xs text-muted-foreground px-1">
+      <div className="flex justify-between text-[10px] sm:text-xs text-muted-foreground px-1">
         <span>Not at all likely</span>
         <span>Extremely likely</span>
       </div>

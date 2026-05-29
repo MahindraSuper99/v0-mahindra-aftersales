@@ -135,29 +135,29 @@ export default function App() {
 
   if (isComplete) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <Card className="max-w-md w-full text-center p-6">
-          <CheckCircle2 className="w-16 h-16 text-[#00c875] mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Thank you for your feedback!</h2>
-          <p className="text-muted-foreground mb-6">Your responses have been saved securely.</p>
-          <Button onClick={() => window.location.reload()}>Submit Another Response</Button>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 safe-area-bottom">
+        <Card className="max-w-md w-full text-center p-4 sm:p-6">
+          <CheckCircle2 className="w-14 h-14 sm:w-16 sm:h-16 text-[#00c875] mx-auto mb-4" />
+          <h2 className="text-xl sm:text-2xl font-bold mb-2">Thank you for your feedback!</h2>
+          <p className="text-sm sm:text-base text-muted-foreground mb-6">Your responses have been saved securely.</p>
+          <Button onClick={() => window.location.reload()} className="w-full sm:w-auto h-12 sm:h-10">Submit Another Response</Button>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 max-w-2xl mx-auto">
-      <div className="text-center mb-6">
-        <h1 className="text-3xl font-bold text-[#b81d24]">MAHINDRA</h1>
-        <p className="text-sm text-muted-foreground">Customer Experience Survey</p>
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8 px-3 sm:px-4 max-w-2xl mx-auto safe-area-bottom">
+      <div className="text-center mb-4 sm:mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#b81d24]">MAHINDRA</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">Customer Experience Survey</p>
       </div>
 
       <ProgressStepper currentStep={currentStep} totalSteps={totalSteps} />
 
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>
+      <Card className="mt-4 sm:mt-6">
+        <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+          <CardTitle className="text-base sm:text-lg leading-snug">
             {currentStep === 1 && 'How likely are you to recommend Mahindra?'}
             {currentStep === 2 && 'How satisfied are you with your vehicle?'}
             {currentStep === 3 && 'Overall Purchase Experience'}
@@ -166,7 +166,7 @@ export default function App() {
             {currentStep === 6 && 'Additional Feedback'}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
           {currentStep === 1 && <NPSRating value={npsScore} onChange={setNpsScore} />}
           {currentStep === 2 && <RatingButtons options={vehicleSatOptions} selected={vehicleSatisfaction} onChange={setVehicleSatisfaction} />}
           {currentStep === 3 && <RatingButtons options={osatOptions} selected={overallExperience} onChange={setOverallExperience} />}
@@ -181,12 +181,12 @@ export default function App() {
             </div>
           )}
 
-          <div className="flex justify-between mt-8 pt-4 border-t">
-            <Button variant="outline" onClick={handleBack} disabled={currentStep === 1}>Back</Button>
+          <div className="flex justify-between mt-6 sm:mt-8 pt-4 border-t gap-3">
+            <Button variant="outline" onClick={handleBack} disabled={currentStep === 1} className="flex-1 sm:flex-none h-12 sm:h-10 text-base sm:text-sm">Back</Button>
             {currentStep === totalSteps ? (
-              <Button onClick={handleSubmit} disabled={isSubmitting}>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
+              <Button onClick={handleSubmit} disabled={isSubmitting} className="flex-1 sm:flex-none h-12 sm:h-10 text-base sm:text-sm">{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
             ) : (
-              <Button onClick={handleNext} disabled={!canProceed()}>Next</Button>
+              <Button onClick={handleNext} disabled={!canProceed()} className="flex-1 sm:flex-none h-12 sm:h-10 text-base sm:text-sm">Next</Button>
             )}
           </div>
         </CardContent>
