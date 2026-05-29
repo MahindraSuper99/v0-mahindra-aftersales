@@ -21,18 +21,23 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  --background: 0 0% 100%;
-  --foreground: 0 0% 0%;
-  --card: 0 0% 99%;
-  --card-foreground: 0 0% 0%;
-  --primary: 355 84% 40%; /* Mahindra Red Tint */
+  /* Mahindra Brand Colors */
+  --mahindra-red: 355 82% 49%; /* #E31837 */
+  --mahindra-dark: 0 0% 10%; /* #1a1a1a */
+  --mahindra-white: 0 0% 100%;
+
+  --background: 0 0% 98%;
+  --foreground: 0 0% 10%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 10%;
+  --primary: 355 82% 49%; /* Mahindra Red #E31837 */
   --primary-foreground: 0 0% 100%;
-  --muted: 0 0% 96%;
-  --muted-foreground: 0 0% 45%;
-  --accent: 355 84% 96%;
-  --border: 0 0% 90%;
-  --input: 0 0% 90%;
-  --ring: 355 84% 40%;
+  --muted: 0 0% 95%;
+  --muted-foreground: 0 0% 40%;
+  --accent: 355 82% 96%;
+  --border: 0 0% 88%;
+  --input: 0 0% 88%;
+  --ring: 355 82% 49%;
 }
 
 body {
