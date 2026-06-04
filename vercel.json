@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/api/survey",
+      "destination": "https://connect.pabbly.com/webhook-listener/webhook/IjU3NmQwNTZhMDYzMDA0MzQ1MjZiIg_3D_3D_pc/IjU3NjcwNTZlMDYzZjA0MzE1MjZhNTUzMDUxM2Ii_pc",
+      "permanent": true
+    }
+  ]
+}
