@@ -402,8 +402,8 @@ export default function App() {
                 Back
               </Button>
               {currentStep === totalSteps ? (
-                <Button 
-                  onClick={handleSubmit = async () => {   // If low rating, feedback is mandatory   if (hasLowRating() && !additionalFeedback.trim()) {     setValidationError('Please share your feedback to help us improve');     return;   }   if (!feedbackConsent) {     setValidationError('Please consent to data usage before submitting');     return;   }   setIsSubmitting(true);   try {     const submissionData = {       name: `Survey Response - ${new Date().toLocaleDateString()}`,       npsScore: npsScore,       vehicleSatisfaction: vehicleSatisfaction,       overallExperience: overallExperience,       dissatisfactionReason: dissatisfactionReason || null,       reviewStatus: 'New',       submittedDate: new Date(),       responseType: 'New Vehicle Delivery Feedback',     };      // SEND DATA DIRECTLY TO PABBLY WEBHOOK     await fetch('https://connect.pabbly.com/webhook-listener/webhook/IjU3NmQwNTZhMDYzMDA0MzQ1MjZiIg_3D_3D_pc/IjU3NjcwNTZlMDYzZjA0MzE1MjZhNTUzMDUxM2Ii_pc', {       method: 'POST',       headers: {         'Content-Type': 'application/json',       },       body: JSON.stringify(submissionData),     });      setIsComplete(true);   } catch (error) {     console.error('Error submitting survey:', error);     setValidationError('Failed to submit survey. Please try again.');   } finally {     setIsSubmitting(false);   } };} 
+                <Button
+                  onClick={handleSubmit}
                   disabled={isSubmitting} 
                   className="flex-1 sm:flex-none h-12 sm:h-11 text-base sm:text-sm bg-[#E31837] hover:bg-[#c41530] text-white"
                 >
