@@ -135,15 +135,15 @@ export default function App() {
         feedbackConsent: feedbackConsent,
       };
 
-      await fetch(
-        'https://connect.pabbly.com/webhook-listener/webhook/IjU3NmQwNTZhMDYzMDA0MzQ1MjZiIg_3D_3D_pc/IjU3NjcwNTZlMDYzZjA0MzE1MjZhNTUzMDUxM2Ii_pc',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(submissionData),
-          mode: 'no-cors',
-        }
-      );
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submissionData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Submission failed with status ${response.status}`);
+      }
 
       setIsComplete(true);
     } catch (error) {
