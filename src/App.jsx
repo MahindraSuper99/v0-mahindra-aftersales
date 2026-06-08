@@ -28,7 +28,7 @@ export default function App() {
   // Q3: Overall Experience OSAT (1-5)
   const [overallExperience, setOverallExperience] = useState(null);
   // Dissatisfaction reason (only shown if OSAT is Poor/Unacceptable)
-  const [dissatisfactionReason, setDissatisfactionReason] = useState('');
+  const [dissatisfactionReason, setDissatisfactionReason] = useState([]);
   // Q4: Additional Feedback
   const [additionalFeedback, setAdditionalFeedback] = useState('');
   const [feedbackConsent, setFeedbackConsent] = useState(false);
@@ -82,7 +82,7 @@ export default function App() {
     if (currentStep === 1) return npsScore !== null;
     if (currentStep === 2) return vehicleSatisfaction !== null;
     if (currentStep === 3) return overallExperience !== null;
-    if (currentStep === 4 && needsReasonStep) return dissatisfactionReason !== '';
+    if (currentStep === 4 && needsReasonStep) return true;
     return true;
   };
 
@@ -128,7 +128,7 @@ export default function App() {
         npsScore: npsScore,
         vehicleSatisfaction: vehicleSatisfaction,
         overallExperience: overallExperience,
-        dissatisfactionReason: dissatisfactionReason || null,
+        dissatisfactionReasons: dissatisfactionReason.length > 0 ? dissatisfactionReason : null,
         hasLowRating: hasLowRating(),
         notes: sanitizeInput(additionalFeedback),
         popiaConsent: popiaConsent,
@@ -207,9 +207,10 @@ export default function App() {
                   alt="Mahindra" 
                   className="h-12 sm:h-16 w-auto mx-auto mb-4"
                 />
-                <h1 className="text-xl sm:text-2xl font-bold text-[#1a1a1a] mb-2">
+                <h1 className="text-xl sm:text-2xl font-bold text-[#1a1a1a] mb-1">
                   New Vehicle Delivery Experience Survey
                 </h1>
+                <p className="text-xs sm:text-sm text-[#E31837] font-medium mb-2">Mahindra South Africa</p>
                 <p className="text-sm sm:text-base text-gray-600">
                   Thank you for choosing Mahindra. Your feedback helps us improve our services.
                 </p>
@@ -335,16 +336,10 @@ export default function App() {
             <CheckCircle2 className="w-16 h-16 sm:w-20 sm:h-20 text-[#00c875] mx-auto mb-4" />
             <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[#1a1a1a]">Thank you for your feedback!</h2>
             <p className="text-sm sm:text-base text-gray-600 mb-2">Your responses have been recorded securely.</p>
-            <p className="text-xs text-gray-500 mb-6">
+            <p className="text-xs text-gray-500">
               Your personal information is protected in accordance with POPIA.
               {hasLowRating() && ' A customer care representative may contact you to address your concerns.'}
             </p>
-            <Button 
-              onClick={() => window.location.reload()} 
-              className="w-full h-12 bg-[#E31837] hover:bg-[#c41530] text-white"
-            >
-              Submit Another Response
-            </Button>
           </Card>
         </div>
       </div>
