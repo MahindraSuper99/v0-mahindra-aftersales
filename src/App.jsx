@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ResponsesBoard } from '@api/BoardSDK.js';
 import { Card, CardContent, CardHeader, CardTitle, Button, Checkbox, Label } from './components/ui-mock';
 import ProgressStepper from './components/ProgressStepper';
@@ -32,6 +32,12 @@ export default function App() {
   // Q4: Additional Feedback
   const [additionalFeedback, setAdditionalFeedback] = useState('');
   const [feedbackConsent, setFeedbackConsent] = useState(false);
+
+  // Capture the unique ID from the URL (e.g. ?id=ABC123)
+  const surveyId = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('id') || null;
+  }, []);
 
   // Check if any question has low rating (makes Q4 mandatory)
   const hasLowRating = () => {
@@ -122,6 +128,7 @@ export default function App() {
       const now = new Date();
       const submissionData = {
         name: `Survey Response - ${now.toLocaleDateString()}`,
+        surveyId: surveyId,
         submittedDate: now.toISOString(),
         responseType: 'New Vehicle Delivery Feedback',
         reviewStatus: 'New',
