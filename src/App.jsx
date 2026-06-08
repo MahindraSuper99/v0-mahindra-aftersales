@@ -108,8 +108,7 @@ export default function App() {
     }
   };
 
-  const handleSubmit = async () => {   // If low rating, feedback is mandatory   if (hasLowRating() && !additionalFeedback.trim()) {     setValidationError('Please share your feedback to help us improve');     return;   }   if (!feedbackConsent) {     setValidationError('Please consent to data usage before submitting');     return;   }   setIsSubmitting(true);   try {     const submissionData = {       name: `Survey Response - ${new Date().toLocaleDateString()}`,       npsScore: npsScore,       vehicleSatisfaction: vehicleSatisfaction,       overallExperience: overallExperience,       dissatisfactionReason: dissatisfactionReason || null,       reviewStatus: 'New',       submittedDate: new Date(),       responseType: 'New Vehicle Delivery Feedback',     };      // SEND DATA DIRECTLY TO PABBLY WEBHOOK     await fetch('https://connect.pabbly.com/webhook-listener/webhook/IjU3NmQwNTZhMDYzMDA0MzQ1MjZiIg_3D_3D_pc/IjU3NjcwNTZlMDYzZjA0MzE1MjZhNTUzMDUxM2Ii_pc', {       method: 'POST',       headers: {         'Content-Type': 'application/json',       },       body: JSON.stringify(submissionData),     });      setIsComplete(true);   } catch (error) {     console.error('Error submitting survey:', error);     setValidationError('Failed to submit survey. Please try again.');   } finally {     setIsSubmitting(false);   } }; = async () => {
-    // If low rating, feedback is mandatory
+  const handleSubmit = async () => {
     if (hasLowRating() && !additionalFeedback.trim()) {
       setValidationError('Please share your feedback to help us improve');
       return;
@@ -120,24 +119,38 @@ export default function App() {
     }
     setIsSubmitting(true);
     try {
+      const now = new Date();
       const submissionData = {
-        name: `Survey Response - ${new Date().toLocaleDateString()}`,
+        name: `Survey Response - ${now.toLocaleDateString()}`,
+        submittedDate: now.toISOString(),
+        responseType: 'New Vehicle Delivery Feedback',
+        reviewStatus: 'New',
         npsScore: npsScore,
         vehicleSatisfaction: vehicleSatisfaction,
         overallExperience: overallExperience,
         dissatisfactionReason: dissatisfactionReason || null,
-        reviewStatus: 'New',
-        submittedDate: new Date(),
-        responseType: 'New Vehicle Delivery Feedback',
+        hasLowRating: hasLowRating(),
+        notes: sanitizeInput(additionalFeedback),
         popiaConsent: popiaConsent,
         feedbackConsent: feedbackConsent,
-        notes: sanitizeInput(additionalFeedback),
-        hasLowRating: hasLowRating()
       };
 
-      await responsesBoard.item().create(submissionData).execute();
+      const response = await fetch(
+        'https://connect.pabbly.com/webhook-listener/webhook/IjU3NmQwNTZhMDYzMDA0MzQ1MjZiIg_3D_3D_pc/IjU3NjcwNTZlMDYzZjA0MzE1MjZhNTUzMDUxM2Ii_pc',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(submissionData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Webhook responded with status ${response.status}`);
+      }
+
       setIsComplete(true);
     } catch (error) {
+      console.error('Error submitting survey:', error);
       setValidationError('Failed to submit survey. Please try again.');
     } finally {
       setIsSubmitting(false);
