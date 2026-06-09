@@ -39,6 +39,16 @@ export default function App() {
     return params.get('id') || null;
   }, []);
 
+  // Check if the survey link has expired (e.g. ?expires=2026-06-16)
+  const isExpired = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    const expires = params.get('expires');
+    if (!expires) return false;
+    const expiryDate = new Date(expires);
+    expiryDate.setHours(23, 59, 59, 999); // expire at end of the expiry day
+    return new Date() > expiryDate;
+  }, []);
+
   // Check if any question has low rating (makes Q4 mandatory)
   const hasLowRating = () => {
     const lowNPS = npsScore !== null && npsScore <= 6;
@@ -194,6 +204,28 @@ export default function App() {
       </div>
     </header>
   );
+
+  // Expired Link Screen
+  if (isExpired) {
+    return (
+      <div className="min-h-screen bg-[#1a1a1a] safe-area-bottom">
+        <Header />
+        <div className="flex items-center justify-center p-4 min-h-[calc(100vh-60px)]">
+          <Card className="max-w-md w-full text-center p-6 sm:p-8 bg-white">
+            <AlertCircle className="w-16 h-16 sm:w-20 sm:h-20 text-[#E31837] mx-auto mb-4" />
+            <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[#1a1a1a]">Survey Link Expired</h2>
+            <p className="text-sm sm:text-base text-gray-600 mb-2">
+              This survey link is no longer active.
+            </p>
+            <p className="text-xs text-gray-500">
+              Survey links are valid for 7 days from the date they are issued.
+              Please contact your Mahindra dealer if you require a new link.
+            </p>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   // Welcome Page with POPIA Consent
   if (showWelcome) {
