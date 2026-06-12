@@ -211,13 +211,13 @@ export default function App() {
       <div className="min-h-screen bg-[#1a1a1a] safe-area-bottom">
         <Header />
         <div className="flex items-center justify-center p-4 min-h-[calc(100vh-60px)]">
-          <Card className="max-w-md w-full text-center p-6 sm:p-8 bg-white">
+          <Card className="max-w-md w-full text-center p-6 sm:p-8 bg-[#222222] border-0">
             <AlertCircle className="w-16 h-16 sm:w-20 sm:h-20 text-[#E31837] mx-auto mb-4" />
-            <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[#1a1a1a]">Survey Link Expired</h2>
-            <p className="text-sm sm:text-base text-gray-600 mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold mb-2 text-white">Survey Link Expired</h2>
+            <p className="text-sm sm:text-base text-white/60 mb-2">
               This survey link is no longer active.
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-white/40">
               Survey links are valid for 7 days from the date they are issued.
               Please contact your Mahindra dealer if you require a new link.
             </p>
@@ -234,82 +234,82 @@ export default function App() {
         <Header />
         
         <div className="py-6 sm:py-10 px-4 sm:px-6 max-w-2xl mx-auto">
-          <Card className="bg-white shadow-xl">
+          <Card className="bg-[#222222] shadow-xl border-0">
             <CardContent className="p-6 sm:p-8">
               {/* Logo and Welcome */}
               <div className="text-center mb-6 sm:mb-8">
-                <img 
-                  src="/mahindra-logo.webp" 
-                  alt="Mahindra" 
+                <img
+                  src="/mahindra-logo.webp"
+                  alt="Mahindra"
                   className="h-12 sm:h-16 w-auto mx-auto mb-4"
                 />
-                <h1 className="text-xl sm:text-2xl font-bold text-[#1a1a1a] mb-1">
+                <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">
                   New Vehicle Delivery Experience Survey
                 </h1>
                 <p className="text-xs sm:text-sm text-[#E31837] font-medium mb-2">Mahindra South Africa</p>
-                <p className="text-sm sm:text-base text-gray-600">
+                <p className="text-sm sm:text-base text-white/70">
                   Thank you for choosing Mahindra. Your feedback helps us improve our services.
                 </p>
               </div>
 
               {/* Survey Info */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:mb-8">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
                   <Clock className="w-5 h-5 text-[#E31837] flex-shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">Duration</p>
-                    <p className="text-sm font-medium text-[#1a1a1a]">2-3 minutes</p>
+                    <p className="text-xs text-white/50">Duration</p>
+                    <p className="text-sm font-medium text-white">2-3 minutes</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
                   <FileText className="w-5 h-5 text-[#E31837] flex-shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">Questions</p>
-                    <p className="text-sm font-medium text-[#1a1a1a]">4 questions</p>
+                    <p className="text-xs text-white/50">Questions</p>
+                    <p className="text-sm font-medium text-white">4 questions</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg">
                   <Shield className="w-5 h-5 text-[#E31837] flex-shrink-0" />
                   <div>
-                    <p className="text-xs text-gray-500">Valid for</p>
-                    <p className="text-sm font-medium text-[#1a1a1a]">7 days</p>
+                    <p className="text-xs text-white/50">Valid for</p>
+                    <p className="text-sm font-medium text-white">7 days</p>
                   </div>
                 </div>
               </div>
 
               {/* POPIA Privacy Notice */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-5 mb-6">
+              <div className="bg-white/5 border border-white/10 rounded-lg p-4 sm:p-5 mb-6">
                 <div className="flex items-start gap-3 mb-3">
                   <Shield className="w-5 h-5 text-[#E31837] flex-shrink-0 mt-0.5" />
-                  <h3 className="font-semibold text-[#1a1a1a] text-sm sm:text-base">
+                  <h3 className="font-semibold text-white text-sm sm:text-base">
                     Privacy Notice (POPIA Compliance)
                   </h3>
                 </div>
-                <div className="text-xs sm:text-sm text-gray-600 space-y-3 ml-8">
+                <div className="text-xs sm:text-sm text-white/60 space-y-3 ml-8">
                   <p>
-                    In accordance with the <strong>Protection of Personal Information Act (POPIA)</strong>, 
+                    In accordance with the <strong className="text-white/80">Protection of Personal Information Act (POPIA)</strong>,
                     we are committed to protecting your personal information and your right to privacy.
                   </p>
-                  <p><strong>What we collect:</strong></p>
+                  <p><strong className="text-white/80">What we collect:</strong></p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>Your satisfaction ratings and feedback responses</li>
                     <li>Survey completion timestamp</li>
                     <li>Device and browser information for survey functionality</li>
                   </ul>
-                  <p><strong>How we use your information:</strong></p>
+                  <p><strong className="text-white/80">How we use your information:</strong></p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>To improve our products and services</li>
                     <li>To address any concerns or issues raised in your feedback</li>
                     <li>To generate anonymised statistical reports</li>
                     <li>To follow up on low satisfaction ratings (CCCF process)</li>
                   </ul>
-                  <p><strong>Your rights:</strong></p>
+                  <p><strong className="text-white/80">Your rights:</strong></p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>You may request access to your personal information</li>
                     <li>You may request correction or deletion of your information</li>
                     <li>You may withdraw consent at any time by contacting us</li>
                   </ul>
-                  <p className="text-[10px] sm:text-xs text-gray-500 mt-2">
+                  <p className="text-[10px] sm:text-xs text-white/40 mt-2">
                     For queries about your personal information, contact Mahindra South Africa at{' '}
                     <a href="mailto:privacy@mahindra.co.za" className="text-[#E31837] underline">privacy@mahindra.co.za</a>
                   </p>
@@ -317,35 +317,35 @@ export default function App() {
               </div>
 
               {/* POPIA Consent Checkbox */}
-              <div className="flex items-start gap-3 p-4 bg-[#E31837]/5 border border-[#E31837]/20 rounded-lg mb-6">
-                <Checkbox 
-                  id="popia-consent" 
-                  checked={popiaConsent} 
+              <div className="flex items-start gap-3 p-4 bg-[#E31837]/10 border border-[#E31837]/30 rounded-lg mb-6">
+                <Checkbox
+                  id="popia-consent"
+                  checked={popiaConsent}
                   onCheckedChange={setPopiaConsent}
                   className="mt-0.5 h-5 w-5 border-[#E31837] data-[state=checked]:bg-[#E31837]"
                 />
-                <Label htmlFor="popia-consent" className="text-xs sm:text-sm text-[#1a1a1a] cursor-pointer leading-relaxed">
-                  <strong>Required:</strong> I have read and understand the Privacy Notice. I consent to Mahindra South Africa 
+                <Label htmlFor="popia-consent" className="text-xs sm:text-sm text-white/80 cursor-pointer leading-relaxed">
+                  <strong className="text-white">Required:</strong> I have read and understand the Privacy Notice. I consent to Mahindra South Africa
                   collecting, processing, and storing my feedback in accordance with POPIA for the purposes described above.
                 </Label>
               </div>
 
               {validationError && (
-                <div className="mb-4 p-3 bg-red-50 text-[#E31837] rounded-lg flex items-center gap-2">
+                <div className="mb-4 p-3 bg-[#E31837]/10 border border-[#E31837]/30 text-[#E31837] rounded-lg flex items-center gap-2">
                   <AlertCircle className="w-5 h-5 flex-shrink-0" />
                   <p className="text-sm">{validationError}</p>
                 </div>
               )}
 
               {/* Start Survey Button */}
-              <Button 
+              <Button
                 onClick={handleStartSurvey}
                 className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold bg-[#E31837] hover:bg-[#c41530] text-white"
               >
                 Start Survey
               </Button>
 
-              <p className="text-center text-[10px] sm:text-xs text-gray-400 mt-4">
+              <p className="text-center text-[10px] sm:text-xs text-white/30 mt-4">
                 By proceeding, you confirm that you are the customer who recently took delivery of a Mahindra vehicle.
               </p>
             </CardContent>
@@ -368,11 +368,11 @@ export default function App() {
       <div className="min-h-screen bg-[#1a1a1a] safe-area-bottom">
         <Header />
         <div className="flex items-center justify-center p-4 min-h-[calc(100vh-60px)]">
-          <Card className="max-w-md w-full text-center p-6 sm:p-8 bg-white">
+          <Card className="max-w-md w-full text-center p-6 sm:p-8 bg-[#222222] border-0">
             <CheckCircle2 className="w-16 h-16 sm:w-20 sm:h-20 text-[#00c875] mx-auto mb-4" />
-            <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[#1a1a1a]">Thank you for your feedback!</h2>
-            <p className="text-sm sm:text-base text-gray-600 mb-2">Your responses have been recorded securely.</p>
-            <p className="text-xs text-gray-500">
+            <h2 className="text-xl sm:text-2xl font-bold mb-2 text-white">Thank you for your feedback!</h2>
+            <p className="text-sm sm:text-base text-white/60 mb-2">Your responses have been recorded securely.</p>
+            <p className="text-xs text-white/40">
               Your personal information is protected in accordance with POPIA.
               {hasLowRating() && ' A customer care representative may contact you to address your concerns.'}
             </p>
@@ -394,12 +394,12 @@ export default function App() {
 
         <ProgressStepper currentStep={currentStep} totalSteps={totalSteps} />
 
-        <Card className="mt-4 sm:mt-6 bg-white shadow-lg">
-          <CardHeader className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100">
-            <CardTitle className="text-base sm:text-lg leading-snug text-[#1a1a1a]">
+        <Card className="mt-4 sm:mt-6 bg-[#222222] shadow-lg border-0">
+          <CardHeader className="px-4 sm:px-6 py-4 sm:py-5 border-b border-white/10">
+            <CardTitle className="text-base sm:text-lg leading-snug text-white">
               {getStepTitle()}
             </CardTitle>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">{getStepDescription()}</p>
+            <p className="text-xs sm:text-sm text-white/50 mt-1">{getStepDescription()}</p>
           </CardHeader>
           <CardContent className="px-4 sm:px-6 py-4 sm:py-6">
             {currentStep === 1 && <NPSRating value={npsScore} onChange={setNpsScore} />}
@@ -417,18 +417,17 @@ export default function App() {
             )}
 
             {validationError && (
-              <div className="mt-4 p-3 bg-red-50 text-[#E31837] rounded-lg flex items-center gap-2">
+              <div className="mt-4 p-3 bg-[#E31837]/10 border border-[#E31837]/30 text-[#E31837] rounded-lg flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
                 <p className="text-sm">{validationError}</p>
               </div>
             )}
 
-            <div className="flex justify-between mt-6 sm:mt-8 pt-4 border-t border-gray-100 gap-3">
-              <Button 
-                variant="outline" 
-                onClick={handleBack} 
-                disabled={currentStep === 1} 
-                className="flex-1 sm:flex-none h-12 sm:h-11 text-base sm:text-sm border-gray-300 text-gray-700 hover:bg-gray-50"
+            <div className="flex justify-between mt-6 sm:mt-8 pt-4 border-t border-white/10 gap-3">
+              <Button
+                variant="outline"
+                onClick={currentStep > 1 ? handleBack : undefined}
+                className="flex-1 sm:flex-none h-12 sm:h-11 text-base sm:text-sm border-2 border-[#E31837] text-[#E31837] hover:bg-[#E31837]/10 !opacity-100"
               >
                 Back
               </Button>
@@ -441,10 +440,10 @@ export default function App() {
                   {isSubmitting ? 'Submitting...' : 'Submit'}
                 </Button>
               ) : (
-                <Button 
-                  onClick={handleNext} 
-                  disabled={!canProceed()} 
-                  className="flex-1 sm:flex-none h-12 sm:h-11 text-base sm:text-sm bg-[#E31837] hover:bg-[#c41530] text-white disabled:bg-gray-300"
+                <Button
+                  onClick={handleNext}
+                  disabled={!canProceed()}
+                  className="flex-1 sm:flex-none h-12 sm:h-11 text-base sm:text-sm bg-[#E31837] hover:bg-[#c41530] text-white !opacity-100"
                 >
                   Next
                 </Button>
