@@ -12,67 +12,54 @@ import { sanitizeInput } from './utils/helpers';
 const responsesBoard = new ResponsesBoard();
 
 export default function App() {
-  // Welcome page state
   const [showWelcome, setShowWelcome] = useState(true);
   const [popiaConsent, setPopiaConsent] = useState(false);
-  
+
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [validationError, setValidationError] = useState('');
-  
+
   // Q1: NPS Score (0-10)
   const [npsScore, setNpsScore] = useState(null);
-  // Q2: Vehicle Satisfaction (1-5)
-  const [vehicleSatisfaction, setVehicleSatisfaction] = useState(null);
-  // Q3: Overall Experience OSAT (1-5)
-  const [overallExperience, setOverallExperience] = useState(null);
-  // Dissatisfaction reason (only shown if OSAT is Poor/Unacceptable)
+  // Q2: Service Experience OSAT
+  const [serviceExperience, setServiceExperience] = useState(null);
+  // Dissatisfaction reasons (shown inline on step 2 for Poor/Unacceptable)
   const [dissatisfactionReason, setDissatisfactionReason] = useState([]);
-  // Q4: Additional Feedback
+  // Q3: Additional Feedback
   const [additionalFeedback, setAdditionalFeedback] = useState('');
   const [feedbackConsent, setFeedbackConsent] = useState(false);
 
-  // Capture the unique ID from the URL (e.g. ?id=ABC123)
   const surveyId = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
     return params.get('id') || null;
   }, []);
 
-  // Check if the survey link has expired (e.g. ?expires=2026-06-16)
+  const dealerName = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('dealer') || '';
+  }, []);
+
   const isExpired = useMemo(() => {
     const params = new URLSearchParams(window.location.search);
     const expires = params.get('expires');
     if (!expires) return false;
     const expiryDate = new Date(expires);
-    expiryDate.setHours(23, 59, 59, 999); // expire at end of the expiry day
+    expiryDate.setHours(23, 59, 59, 999);
     return new Date() > expiryDate;
   }, []);
 
-  // Check if any question has low rating (makes Q4 mandatory)
+  const isLowRating = serviceExperience === 'Poor' || serviceExperience === 'Unacceptable';
+  const isHighRating = serviceExperience === 'Excellent' || serviceExperience === 'Good';
+
   const hasLowRating = () => {
     const lowNPS = npsScore !== null && npsScore <= 6;
-    const lowVehicleSat = vehicleSatisfaction === 'Dissatisfied' || vehicleSatisfaction === 'Very Dissatisfied';
-    const lowOSAT = overallExperience === 'Poor' || overallExperience === 'Unacceptable';
-    return lowNPS || lowVehicleSat || lowOSAT;
+    return lowNPS || isLowRating;
   };
 
-  // Determine if reason step is needed (only for Poor/Unacceptable OSAT)
-  const needsReasonStep = overallExperience === 'Poor' || overallExperience === 'Unacceptable';
-  
-  // Total steps: 1(NPS) + 2(Vehicle) + 3(OSAT) + 4?(Reason if low OSAT) + 5(Feedback)
-  const totalSteps = needsReasonStep ? 5 : 4;
-  
-  // Vehicle Satisfaction Options (matches Intello)
-  const vehicleSatOptions = [
-    { label: 'Very Satisfied', color: 'bg-[#00c875]' },
-    { label: 'Satisfied', color: 'bg-[#9cd326]' },
-    { label: 'Neutral', color: 'bg-[#fdab3d]' },
-    { label: 'Dissatisfied', color: 'bg-[#ff7b5c]' },
-    { label: 'Very Dissatisfied', color: 'bg-[#e2445c]' }
-  ];
+  // Always 3 steps: NPS → Service OSAT (with inline reasons/message) → Feedback
+  const totalSteps = 3;
 
-  // Overall Satisfaction (OSAT) Options (matches Intello exactly)
   const osatOptions = [
     { label: 'Excellent', color: 'bg-[#00c875]' },
     { label: 'Good', color: 'bg-[#9cd326]' },
@@ -81,24 +68,27 @@ export default function App() {
     { label: 'Unacceptable', color: 'bg-[#e2445c]' }
   ];
 
-  // Dissatisfaction Reasons (from Intello PDF - New Vehicle Delivery)
   const reasonOptions = [
-    'Sales Consultant did not explain vehicle features',
-    'Unhappy with Ceremonial Delivery Moment',
-    'No Updates given on Vehicle delivery status',
-    'Poor vehicle condition and cleanliness',
-    'Misinformation about delivery status',
-    'Dealer did not assist in home Charger installation (Applicable to EVs)',
-    'Issues with Documentation / Paperwork',
-    'Dealership Amenities not satisfactory',
-    'Other'
+    'Updates on vehicle status',
+    'Transparency & Fairness of charges',
+    'Experience with Service advisor',
+    'Cleanliness of vehicle',
+    'Time taken for service',
+    'Quality of work done',
+    'More'
   ];
+
+  const getInlineMessage = () => {
+    if (!serviceExperience) return null;
+    if (serviceExperience === 'Excellent') return 'We are thrilled to know that you had an excellent experience with us.';
+    if (serviceExperience === 'Good') return 'We are glad to know that you had a good experience with us.';
+    if (serviceExperience === 'Fair') return 'Thank you for your feedback. We will work to improve your experience.';
+    return null;
+  };
 
   const canProceed = () => {
     if (currentStep === 1) return npsScore !== null;
-    if (currentStep === 2) return vehicleSatisfaction !== null;
-    if (currentStep === 3) return overallExperience !== null;
-    if (currentStep === 4 && needsReasonStep) return true;
+    if (currentStep === 2) return serviceExperience !== null;
     return true;
   };
 
@@ -119,9 +109,7 @@ export default function App() {
 
   const handleBack = () => {
     setValidationError('');
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
   const handleSubmit = async () => {
@@ -138,18 +126,18 @@ export default function App() {
       const now = new Date();
       const submissionData = {
         name: `Survey Response - ${now.toLocaleDateString()}`,
-        surveyId: surveyId,
+        surveyId,
+        dealerName,
         submittedDate: now.toISOString(),
-        responseType: 'New Vehicle Delivery Feedback',
+        responseType: 'After Sales Service Feedback',
         reviewStatus: 'New',
-        npsScore: npsScore,
-        vehicleSatisfaction: vehicleSatisfaction,
-        overallExperience: overallExperience,
+        npsScore,
+        serviceExperience,
         dissatisfactionReasons: dissatisfactionReason.length > 0 ? dissatisfactionReason : null,
         hasLowRating: hasLowRating(),
         notes: sanitizeInput(additionalFeedback),
-        popiaConsent: popiaConsent,
-        feedbackConsent: feedbackConsent,
+        popiaConsent,
+        feedbackConsent,
       };
 
       const response = await fetch('/api/submit', {
@@ -158,10 +146,7 @@ export default function App() {
         body: JSON.stringify(submissionData),
       });
 
-      if (!response.ok) {
-        throw new Error(`Submission failed with status ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`Submission failed with status ${response.status}`);
       setIsComplete(true);
     } catch (error) {
       console.error('Error submitting survey:', error);
@@ -171,41 +156,20 @@ export default function App() {
     }
   };
 
-  // Get current step title based on Intello flow
   const getStepTitle = () => {
     if (currentStep === 1) return 'How likely are you to recommend your Mahindra to others?';
-    if (currentStep === 2) return 'How satisfied are you with your vehicle, including its technology and features?';
-    if (currentStep === 3) return 'Based on your recent Purchase Experience, please rate us on your Overall Experience';
-    if (currentStep === 4 && needsReasonStep) return 'Please select the primary reason for your dissatisfaction';
-    return 'Would you like to share any additional feedback about your experience?';
+    if (currentStep === 2) return `How was your service experience at ${dealerName}?`;
+    return 'Would you like to share any thing more about your experience?';
   };
 
-  // Get subtitle/description for current step
-  const getStepDescription = () => {
-    if (currentStep === 1) return 'On a scale of 0-10, where 0 is not at all likely and 10 is extremely likely';
-    if (currentStep === 2) return 'Rate your satisfaction with your new Mahindra vehicle';
-    if (currentStep === 3) return 'Rate your overall purchase and delivery experience';
-    if (currentStep === 4 && needsReasonStep) return 'Single selection only';
-    if (hasLowRating()) return 'Your feedback is required to help us understand how we can improve';
-    return 'Optional - Share any additional comments';
-  };
-
-  // Header component
   const Header = () => (
     <header className="bg-gradient-to-r from-[#E31837] to-[#b81226] text-white py-3 sm:py-4 px-4 sm:px-6">
       <div className="max-w-2xl mx-auto flex items-center justify-center sm:justify-start">
-        <div className="flex items-center gap-3">
-          <img 
-            src="/mahindra-logo.webp" 
-            alt="Mahindra" 
-            className="h-8 sm:h-10 w-auto"
-          />
-        </div>
+        <img src="/mahindra-logo.webp" alt="Mahindra" className="h-8 sm:h-10 w-auto" />
       </div>
     </header>
   );
 
-  // Expired Link Screen
   if (isExpired) {
     return (
       <div className="min-h-screen bg-[#1a1a1a] safe-area-bottom">
@@ -214,9 +178,7 @@ export default function App() {
           <Card className="max-w-md w-full text-center p-6 sm:p-8 bg-white">
             <AlertCircle className="w-16 h-16 sm:w-20 sm:h-20 text-[#E31837] mx-auto mb-4" />
             <h2 className="text-xl sm:text-2xl font-bold mb-2 text-[#1a1a1a]">Survey Link Expired</h2>
-            <p className="text-sm sm:text-base text-gray-600 mb-2">
-              This survey link is no longer active.
-            </p>
+            <p className="text-sm sm:text-base text-gray-600 mb-2">This survey link is no longer active.</p>
             <p className="text-xs text-gray-500">
               Survey links are valid for 7 days from the date they are issued.
               Please contact your Mahindra dealer if you require a new link.
@@ -227,45 +189,37 @@ export default function App() {
     );
   }
 
-  // Welcome Page with POPIA Consent
   if (showWelcome) {
     return (
       <div className="min-h-screen bg-[#1a1a1a] safe-area-bottom">
         <Header />
-        
         <div className="py-6 sm:py-10 px-4 sm:px-6 max-w-2xl mx-auto">
           <Card className="bg-white shadow-xl">
             <CardContent className="p-6 sm:p-8">
-              {/* Logo and Welcome */}
               <div className="text-center mb-6 sm:mb-8">
-                <img 
-                  src="/mahindra-logo.webp" 
-                  alt="Mahindra" 
-                  className="h-12 sm:h-16 w-auto mx-auto mb-4"
-                />
+                <img src="/mahindra-logo.webp" alt="Mahindra" className="h-12 sm:h-16 w-auto mx-auto mb-4" />
                 <h1 className="text-xl sm:text-2xl font-bold text-[#1a1a1a] mb-1">
-                  New Vehicle Delivery Experience Survey
+                  After Sales Service Experience Survey
                 </h1>
                 <p className="text-xs sm:text-sm text-[#E31837] font-medium mb-2">Mahindra South Africa</p>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Thank you for choosing Mahindra. Your feedback helps us improve our services.
+                  Thank you for servicing your Mahindra with us. Your feedback helps us improve our service.
                 </p>
               </div>
 
-              {/* Survey Info */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:mb-8">
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <Clock className="w-5 h-5 text-[#E31837] flex-shrink-0" />
                   <div>
                     <p className="text-xs text-gray-500">Duration</p>
-                    <p className="text-sm font-medium text-[#1a1a1a]">2-3 minutes</p>
+                    <p className="text-sm font-medium text-[#1a1a1a]">1-2 minutes</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <FileText className="w-5 h-5 text-[#E31837] flex-shrink-0" />
                   <div>
                     <p className="text-xs text-gray-500">Questions</p>
-                    <p className="text-sm font-medium text-[#1a1a1a]">4 questions</p>
+                    <p className="text-sm font-medium text-[#1a1a1a]">3 questions</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
@@ -277,7 +231,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* POPIA Privacy Notice */}
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-5 mb-6">
                 <div className="flex items-start gap-3 mb-3">
                   <Shield className="w-5 h-5 text-[#E31837] flex-shrink-0 mt-0.5" />
@@ -287,7 +240,7 @@ export default function App() {
                 </div>
                 <div className="text-xs sm:text-sm text-gray-600 space-y-3 ml-8">
                   <p>
-                    In accordance with the <strong>Protection of Personal Information Act (POPIA)</strong>, 
+                    In accordance with the <strong>Protection of Personal Information Act (POPIA)</strong>,
                     we are committed to protecting your personal information and your right to privacy.
                   </p>
                   <p><strong>What we collect:</strong></p>
@@ -298,7 +251,7 @@ export default function App() {
                   </ul>
                   <p><strong>How we use your information:</strong></p>
                   <ul className="list-disc list-inside space-y-1 ml-2">
-                    <li>To improve our products and services</li>
+                    <li>To improve our service quality</li>
                     <li>To address any concerns or issues raised in your feedback</li>
                     <li>To generate anonymised statistical reports</li>
                     <li>To follow up on low satisfaction ratings (CCCF process)</li>
@@ -316,16 +269,15 @@ export default function App() {
                 </div>
               </div>
 
-              {/* POPIA Consent Checkbox */}
               <div className="flex items-start gap-3 p-4 bg-[#E31837]/5 border border-[#E31837]/20 rounded-lg mb-6">
-                <Checkbox 
-                  id="popia-consent" 
-                  checked={popiaConsent} 
+                <Checkbox
+                  id="popia-consent"
+                  checked={popiaConsent}
                   onCheckedChange={setPopiaConsent}
                   className="mt-0.5 h-5 w-5 border-[#E31837] data-[state=checked]:bg-[#E31837]"
                 />
                 <Label htmlFor="popia-consent" className="text-xs sm:text-sm text-[#1a1a1a] cursor-pointer leading-relaxed">
-                  <strong>Required:</strong> I have read and understand the Privacy Notice. I consent to Mahindra South Africa 
+                  <strong>Required:</strong> I have read and understand the Privacy Notice. I consent to Mahindra South Africa
                   collecting, processing, and storing my feedback in accordance with POPIA for the purposes described above.
                 </Label>
               </div>
@@ -337,8 +289,7 @@ export default function App() {
                 </div>
               )}
 
-              {/* Start Survey Button */}
-              <Button 
+              <Button
                 onClick={handleStartSurvey}
                 className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold bg-[#E31837] hover:bg-[#c41530] text-white"
               >
@@ -346,13 +297,11 @@ export default function App() {
               </Button>
 
               <p className="text-center text-[10px] sm:text-xs text-gray-400 mt-4">
-                By proceeding, you confirm that you are the customer who recently took delivery of a Mahindra vehicle.
+                By proceeding, you confirm that you are the customer whose vehicle was recently serviced at a Mahindra dealership.
               </p>
             </CardContent>
           </Card>
         </div>
-
-        {/* Footer */}
         <div className="py-4 text-center">
           <p className="text-white/40 text-[10px] sm:text-xs">
             &copy; {new Date().getFullYear()} Mahindra South Africa. All rights reserved.
@@ -362,7 +311,6 @@ export default function App() {
     );
   }
 
-  // Completion Screen
   if (isComplete) {
     return (
       <div className="min-h-screen bg-[#1a1a1a] safe-area-bottom">
@@ -382,14 +330,13 @@ export default function App() {
     );
   }
 
-  // Survey Steps
   return (
     <div className="min-h-screen bg-[#1a1a1a] safe-area-bottom">
       <Header />
 
       <div className="py-4 sm:py-6 px-3 sm:px-4 max-w-2xl mx-auto">
         <div className="text-center mb-4">
-          <p className="text-white/80 text-xs sm:text-sm">New Vehicle Delivery Experience Survey</p>
+          <p className="text-white/80 text-xs sm:text-sm">After Sales Service Experience Survey</p>
         </div>
 
         <ProgressStepper currentStep={currentStep} totalSteps={totalSteps} />
@@ -399,18 +346,35 @@ export default function App() {
             <CardTitle className="text-base sm:text-lg leading-snug text-[#1a1a1a]">
               {getStepTitle()}
             </CardTitle>
-            <p className="text-xs sm:text-sm text-gray-500 mt-1">{getStepDescription()}</p>
           </CardHeader>
           <CardContent className="px-4 sm:px-6 py-4 sm:py-6">
+
             {currentStep === 1 && <NPSRating value={npsScore} onChange={setNpsScore} />}
-            {currentStep === 2 && <RatingButtons options={vehicleSatOptions} selected={vehicleSatisfaction} onChange={setVehicleSatisfaction} />}
-            {currentStep === 3 && <RatingButtons options={osatOptions} selected={overallExperience} onChange={setOverallExperience} />}
-            {currentStep === 4 && needsReasonStep && <ReasonSelector options={reasonOptions} selected={dissatisfactionReason} onChange={setDissatisfactionReason} />}
-            {((currentStep === 4 && !needsReasonStep) || (currentStep === 5 && needsReasonStep)) && (
-              <FeedbackTextarea 
-                value={additionalFeedback} 
-                onChange={setAdditionalFeedback} 
-                consent={feedbackConsent} 
+
+            {currentStep === 2 && (
+              <div className="space-y-4">
+                <RatingButtons options={osatOptions} selected={serviceExperience} onChange={(val) => { setServiceExperience(val); setDissatisfactionReason([]); }} />
+                {/* Inline contextual message for positive ratings */}
+                {getInlineMessage() && (
+                  <p className="text-sm text-gray-700 pt-2">{getInlineMessage()}</p>
+                )}
+                {/* Inline reason selector for Poor/Unacceptable */}
+                {isLowRating && (
+                  <div className="pt-2">
+                    <p className="text-sm font-medium text-gray-800 mb-3">
+                      Sorry, to hear that. Tell us what went wrong (Select all that apply).
+                    </p>
+                    <ReasonSelector options={reasonOptions} selected={dissatisfactionReason} onChange={setDissatisfactionReason} />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {currentStep === 3 && (
+              <FeedbackTextarea
+                value={additionalFeedback}
+                onChange={setAdditionalFeedback}
+                consent={feedbackConsent}
                 onConsentChange={setFeedbackConsent}
                 isRequired={hasLowRating()}
               />
@@ -424,10 +388,10 @@ export default function App() {
             )}
 
             <div className="flex justify-between mt-6 sm:mt-8 pt-4 border-t border-gray-100 gap-3">
-              <Button 
-                variant="outline" 
-                onClick={handleBack} 
-                disabled={currentStep === 1} 
+              <Button
+                variant="outline"
+                onClick={handleBack}
+                disabled={currentStep === 1}
                 className="flex-1 sm:flex-none h-12 sm:h-11 text-base sm:text-sm border-gray-300 text-gray-700 hover:bg-gray-50"
               >
                 Back
@@ -435,15 +399,15 @@ export default function App() {
               {currentStep === totalSteps ? (
                 <Button
                   onClick={handleSubmit}
-                  disabled={isSubmitting} 
+                  disabled={isSubmitting}
                   className="flex-1 sm:flex-none h-12 sm:h-11 text-base sm:text-sm bg-[#E31837] hover:bg-[#c41530] text-white"
                 >
                   {isSubmitting ? 'Submitting...' : 'Submit'}
                 </Button>
               ) : (
-                <Button 
-                  onClick={handleNext} 
-                  disabled={!canProceed()} 
+                <Button
+                  onClick={handleNext}
+                  disabled={!canProceed()}
                   className="flex-1 sm:flex-none h-12 sm:h-11 text-base sm:text-sm bg-[#E31837] hover:bg-[#c41530] text-white disabled:bg-gray-300"
                 >
                   Next
@@ -453,7 +417,6 @@ export default function App() {
           </CardContent>
         </Card>
 
-        {/* Footer */}
         <div className="mt-6 text-center">
           <p className="text-white/50 text-[10px] sm:text-xs">
             Survey link valid for 7 days | Your data is protected under POPIA
