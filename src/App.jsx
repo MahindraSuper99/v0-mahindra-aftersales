@@ -122,10 +122,7 @@ export default function App() {
   };
 
   const handleSubmit = async () => {
-    if (hasLowRating() && !additionalFeedback.trim()) {
-      setValidationError('Please share your feedback to help us improve');
-      return;
-    }
+
     if (!feedbackConsent) {
       setValidationError('Please consent to data usage before submitting');
       return;
@@ -401,7 +398,7 @@ export default function App() {
                 onChange={setAdditionalFeedback}
                 consent={feedbackConsent}
                 onConsentChange={setFeedbackConsent}
-                isRequired={hasLowRating()}
+                isRequired={false}
               />
             )}
 
