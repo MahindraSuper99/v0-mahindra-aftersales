@@ -93,7 +93,8 @@ export default function ReasonSelector({
             {/* Free-text input for "More" */}
             {showMoreInput && (
               <div className="pl-3 border-l-4 border-[#1a1a1a] ml-2">
-                <p className="text-xs font-semibold text-gray-600 mb-2">Please tell us more:</p>
+                <p className="text-xs font-semibold text-gray-600 mb-1">Please tell us more: <span className="text-[#E31837]">*</span></p>
+                <p className="text-xs text-[#E31837] mb-2">Required — please describe your experience</p>
                 <textarea
                   value={moreDetail}
                   onChange={(e) => onMoreDetail(e.target.value)}

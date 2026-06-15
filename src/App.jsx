@@ -95,7 +95,10 @@ export default function App() {
     if (currentStep === 1) return npsScore !== null;
     if (currentStep === 2) {
       if (!serviceExperience) return false;
-      if (isLowRating) return dissatisfactionReason.length > 0;
+      if (isLowRating) {
+        if (dissatisfactionReason.length === 0) return false;
+        if (dissatisfactionReason.includes('More') && !moreDetail.trim()) return false;
+      }
       return true;
     }
     return true;
