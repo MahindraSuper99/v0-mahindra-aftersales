@@ -26,6 +26,7 @@ export default function App() {
   const [serviceExperience, setServiceExperience] = useState(null);
   // Dissatisfaction reasons (shown inline on step 2 for Poor/Unacceptable)
   const [dissatisfactionReason, setDissatisfactionReason] = useState([]);
+  const [vehicleUpdateSub, setVehicleUpdateSub] = useState([]);
   // Q3: Additional Feedback
   const [additionalFeedback, setAdditionalFeedback] = useState('');
   const [feedbackConsent, setFeedbackConsent] = useState(false);
@@ -69,14 +70,17 @@ export default function App() {
   ];
 
   const reasonOptions = [
-    'Updates on vehicle status',
-    'Transparency & Fairness of charges',
-    'Experience with Service advisor',
+    'No updates on vehicle status',
+    'Lack of transparency and explanation of charges',
+    'Unpleasant experience with the Service Advisor',
     'Cleanliness of vehicle',
     'Time taken for service',
     'Quality of work done',
     'More'
   ];
+
+  const vehicleUpdateKey = 'No updates on vehicle status';
+  const vehicleUpdateSubOptions = ['Too many', 'Too few', 'Not enough'];
 
   const getInlineMessage = () => {
     if (!serviceExperience) return null;
@@ -88,7 +92,11 @@ export default function App() {
 
   const canProceed = () => {
     if (currentStep === 1) return npsScore !== null;
-    if (currentStep === 2) return serviceExperience !== null;
+    if (currentStep === 2) {
+      if (!serviceExperience) return false;
+      if (isLowRating) return dissatisfactionReason.length > 0;
+      return true;
+    }
     return true;
   };
 
@@ -134,6 +142,7 @@ export default function App() {
         npsScore,
         serviceExperience,
         dissatisfactionReasons: dissatisfactionReason.length > 0 ? dissatisfactionReason : null,
+        vehicleUpdateFrequency: vehicleUpdateSub.length > 0 ? vehicleUpdateSub : null,
         hasLowRating: hasLowRating(),
         notes: sanitizeInput(additionalFeedback),
         popiaConsent,
@@ -353,18 +362,28 @@ export default function App() {
 
             {currentStep === 2 && (
               <div className="space-y-4">
-                <RatingButtons options={osatOptions} selected={serviceExperience} onChange={(val) => { setServiceExperience(val); setDissatisfactionReason([]); }} />
-                {/* Inline contextual message for positive ratings */}
+                <RatingButtons options={osatOptions} selected={serviceExperience} onChange={(val) => { setServiceExperience(val); setDissatisfactionReason([]); setVehicleUpdateSub([]); }} />
                 {getInlineMessage() && (
                   <p className="text-sm text-gray-700 pt-2">{getInlineMessage()}</p>
                 )}
-                {/* Inline reason selector for Poor/Unacceptable */}
                 {isLowRating && (
                   <div className="pt-2">
-                    <p className="text-sm font-medium text-gray-800 mb-3">
-                      Sorry, to hear that. Tell us what went wrong (Select all that apply).
+                    <p className="text-sm font-medium text-gray-800 mb-1">
+                      Sorry to hear that. Tell us what went wrong (Select all that apply).
                     </p>
-                    <ReasonSelector options={reasonOptions} selected={dissatisfactionReason} onChange={setDissatisfactionReason} />
+                    <p className="text-xs text-[#E31837] mb-3">At least one selection is required to continue</p>
+                    <ReasonSelector
+                      options={reasonOptions}
+                      selected={dissatisfactionReason}
+                      onChange={(val) => {
+                        setDissatisfactionReason(val);
+                        if (!val.includes(vehicleUpdateKey)) setVehicleUpdateSub([]);
+                      }}
+                      subOptionsKey={vehicleUpdateKey}
+                      subOptions={vehicleUpdateSubOptions}
+                      subSelected={vehicleUpdateSub}
+                      onSubChange={setVehicleUpdateSub}
+                    />
                   </div>
                 )}
               </div>
