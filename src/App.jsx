@@ -27,6 +27,7 @@ export default function App() {
   // Dissatisfaction reasons (shown inline on step 2 for Poor/Unacceptable)
   const [dissatisfactionReason, setDissatisfactionReason] = useState([]);
   const [vehicleUpdateSub, setVehicleUpdateSub] = useState([]);
+  const [moreDetail, setMoreDetail] = useState('');
   // Q3: Additional Feedback
   const [additionalFeedback, setAdditionalFeedback] = useState('');
   const [feedbackConsent, setFeedbackConsent] = useState(false);
@@ -143,6 +144,7 @@ export default function App() {
         serviceExperience,
         dissatisfactionReasons: dissatisfactionReason.length > 0 ? dissatisfactionReason : null,
         vehicleUpdateFrequency: vehicleUpdateSub.length > 0 ? vehicleUpdateSub : null,
+        moreDetail: moreDetail.trim() || null,
         hasLowRating: hasLowRating(),
         notes: sanitizeInput(additionalFeedback),
         popiaConsent,
@@ -362,7 +364,7 @@ export default function App() {
 
             {currentStep === 2 && (
               <div className="space-y-4">
-                <RatingButtons options={osatOptions} selected={serviceExperience} onChange={(val) => { setServiceExperience(val); setDissatisfactionReason([]); setVehicleUpdateSub([]); }} />
+                <RatingButtons options={osatOptions} selected={serviceExperience} onChange={(val) => { setServiceExperience(val); setDissatisfactionReason([]); setVehicleUpdateSub([]); setMoreDetail(''); }} />
                 {getInlineMessage() && (
                   <p className="text-sm text-gray-700 pt-2">{getInlineMessage()}</p>
                 )}
@@ -378,11 +380,15 @@ export default function App() {
                       onChange={(val) => {
                         setDissatisfactionReason(val);
                         if (!val.includes(vehicleUpdateKey)) setVehicleUpdateSub([]);
+                        if (!val.includes('More')) setMoreDetail('');
                       }}
                       subOptionsKey={vehicleUpdateKey}
                       subOptions={vehicleUpdateSubOptions}
                       subSelected={vehicleUpdateSub}
                       onSubChange={setVehicleUpdateSub}
+                      moreKey="More"
+                      moreDetail={moreDetail}
+                      onMoreDetail={setMoreDetail}
                     />
                   </div>
                 )}

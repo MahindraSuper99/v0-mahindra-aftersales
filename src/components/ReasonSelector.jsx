@@ -9,6 +9,9 @@ export default function ReasonSelector({
   subOptions = [],
   subSelected = [],
   onSubChange,
+  moreKey,
+  moreDetail = '',
+  onMoreDetail,
 }) {
   const toggle = (reason) => {
     if (selected.includes(reason)) {
@@ -31,9 +34,10 @@ export default function ReasonSelector({
       {options.map((reason) => {
         const isSelected = selected.includes(reason);
         const showSub = isSelected && reason === subOptionsKey && subOptions.length > 0;
+        const showMoreInput = isSelected && reason === moreKey;
 
         return (
-          <div key={reason} className={cn('flex flex-col gap-2', showSub && 'sm:col-span-2')}>
+          <div key={reason} className={cn('flex flex-col gap-2', (showSub || showMoreInput) && 'sm:col-span-2')}>
             <button
               type="button"
               onClick={() => toggle(reason)}
@@ -44,7 +48,6 @@ export default function ReasonSelector({
                   : 'bg-gray-100 text-gray-700 font-medium border-transparent hover:border-gray-400 hover:bg-gray-200'
               )}
             >
-              {/* Checkbox indicator */}
               <span className={cn(
                 'flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all',
                 isSelected ? 'bg-white border-white' : 'bg-white border-gray-400'
@@ -54,7 +57,7 @@ export default function ReasonSelector({
               <span className="text-left leading-snug">{reason}</span>
             </button>
 
-            {/* Sub-options expand inline below when parent is selected */}
+            {/* Sub-options for vehicle status */}
             {showSub && (
               <div className="pl-3 border-l-4 border-[#1a1a1a] ml-2 pb-1">
                 <p className="text-xs font-semibold text-gray-600 mb-2">Select all that apply:</p>
@@ -84,6 +87,20 @@ export default function ReasonSelector({
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* Free-text input for "More" */}
+            {showMoreInput && (
+              <div className="pl-3 border-l-4 border-[#1a1a1a] ml-2">
+                <p className="text-xs font-semibold text-gray-600 mb-2">Please tell us more:</p>
+                <textarea
+                  value={moreDetail}
+                  onChange={(e) => onMoreDetail(e.target.value)}
+                  placeholder="Describe your experience..."
+                  rows={3}
+                  className="w-full text-sm text-gray-800 bg-white border-2 border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-[#1a1a1a] resize-none"
+                />
               </div>
             )}
           </div>
