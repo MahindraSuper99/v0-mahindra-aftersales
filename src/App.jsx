@@ -29,6 +29,7 @@ export default function App() {
   const [vehicleUpdateSub, setVehicleUpdateSub] = useState([]);
   const [moreDetail, setMoreDetail] = useState('');
   // Q3: Additional Feedback
+  const [wantsToComment, setWantsToComment] = useState(null);
   const [additionalFeedback, setAdditionalFeedback] = useState('');
   const [feedbackConsent, setFeedbackConsent] = useState(false);
 
@@ -146,7 +147,8 @@ export default function App() {
         vehicleUpdateFrequency: vehicleUpdateSub.length > 0 ? vehicleUpdateSub : null,
         moreDetail: moreDetail.trim() || null,
         hasLowRating: hasLowRating(),
-        notes: sanitizeInput(additionalFeedback),
+        wantsToComment,
+        notes: wantsToComment === 'Yes' ? sanitizeInput(additionalFeedback) : null,
         popiaConsent,
         feedbackConsent,
       };
@@ -170,7 +172,7 @@ export default function App() {
   const getStepTitle = () => {
     if (currentStep === 1) return 'How likely are you to recommend your Mahindra to others?';
     if (currentStep === 2) return `How was your service experience at ${dealerName}?`;
-    return 'Would you like to share any thing more about your experience?';
+    return 'Additional Comments';
   };
 
   const Header = () => (
@@ -401,7 +403,8 @@ export default function App() {
                 onChange={setAdditionalFeedback}
                 consent={feedbackConsent}
                 onConsentChange={setFeedbackConsent}
-                isRequired={false}
+                wantsToComment={wantsToComment}
+                onWantsToComment={(val) => { setWantsToComment(val); if (val === 'No') setAdditionalFeedback(''); }}
               />
             )}
 
