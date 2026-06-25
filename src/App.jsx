@@ -74,7 +74,8 @@ export default function App() {
   const reasonOptions = [
     'No updates on vehicle status',
     'Lack of transparency and explanation of charges',
-    'Unpleasant experience with the Service Advisor',
+    'Fairness of charges',
+    'Responsiveness & Friendliness of Service Advisor/Reception',
     'Cleanliness of vehicle',
     'Time taken for service',
     'Quality of work done',
@@ -147,8 +148,8 @@ export default function App() {
         vehicleUpdateFrequency: vehicleUpdateSub.length > 0 ? vehicleUpdateSub : null,
         moreDetail: moreDetail.trim() || null,
         hasLowRating: hasLowRating(),
-        wantsToComment,
-        notes: wantsToComment === 'Yes' ? sanitizeInput(additionalFeedback) : null,
+        wantsCallback: wantsToComment,
+        notes: sanitizeInput(additionalFeedback) || null,
         popiaConsent,
         feedbackConsent,
       };
@@ -172,7 +173,7 @@ export default function App() {
   const getStepTitle = () => {
     if (currentStep === 1) return 'How likely are you to recommend your Mahindra to others?';
     if (currentStep === 2) return `How was your service experience at ${dealerName}?`;
-    return 'Additional Comments';
+    return 'Would you like to be contacted by a customer care representative?';
   };
 
   const Header = () => (
@@ -335,7 +336,6 @@ export default function App() {
             <p className="text-sm sm:text-base text-gray-600 mb-2">Your responses have been recorded securely.</p>
             <p className="text-xs text-gray-500">
               Your personal information is protected in accordance with POPIA.
-              {hasLowRating() && ' A customer care representative may contact you to address your concerns.'}
             </p>
           </Card>
         </div>

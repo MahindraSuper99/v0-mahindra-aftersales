@@ -5,36 +5,34 @@ export default function FeedbackTextarea({ value, onChange, consent, onConsentCh
   return (
     <div className="space-y-5">
 
-      {/* Yes / No question */}
-      <div>
-        <p className="text-sm font-medium text-gray-800 mb-3">
-          Would you like to share anything more about your experience?
-        </p>
-        <div className="flex gap-3">
-          {['Yes', 'No'].map((option) => {
-            const isSelected = wantsToComment === option;
-            return (
-              <button
-                key={option}
-                type="button"
-                onClick={() => onWantsToComment(option)}
-                className={cn(
-                  'flex-1 py-3 rounded-lg text-sm font-semibold border-2 transition-all active:scale-[0.98]',
-                  isSelected
-                    ? 'bg-[#1a1a1a] text-white border-[#1a1a1a] shadow-md'
-                    : 'bg-gray-100 text-gray-700 border-transparent hover:border-gray-400 hover:bg-gray-200'
-                )}
-              >
-                {option}
-              </button>
-            );
-          })}
-        </div>
+      {/* Contact preference Yes / No */}
+      <div className="flex gap-3">
+        {['Yes', 'No'].map((option) => {
+          const isSelected = wantsToComment === option;
+          return (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onWantsToComment(option)}
+              className={cn(
+                'flex-1 py-3 rounded-lg text-sm font-semibold border-2 transition-all active:scale-[0.98]',
+                isSelected
+                  ? 'bg-[#1a1a1a] text-white border-[#1a1a1a] shadow-md'
+                  : 'bg-gray-100 text-gray-700 border-transparent hover:border-gray-400 hover:bg-gray-200'
+              )}
+            >
+              {option}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Comments block — only shown when Yes */}
-      {wantsToComment === 'Yes' && (
+      {/* Optional comments — always available once they've answered above */}
+      {wantsToComment && (
         <div>
+          <p className="text-sm font-medium text-gray-700 mb-2">
+            Would you like to share any additional comments? <span className="text-gray-400 font-normal">(Optional)</span>
+          </p>
           <Textarea
             id="feedback"
             value={value}
